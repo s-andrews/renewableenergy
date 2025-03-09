@@ -1,0 +1,63 @@
+html, body, #maincontent {
+    margin:0;
+    padding: 0;
+}
+
+body {
+    height: 100vh;
+    width: 100vw
+}
+
+#maincontent {
+    width: 100%;
+    height: 100%;
+}
+
+#museum {
+    position: absolute;
+    width: 30%;
+    left: 35vw;
+    top: 55vh
+}
+
+#pylon {
+    position: absolute;
+    width: 10%;
+    left: 10vw;
+    top: 70vh
+}
+
+#turbine {
+    position: absolute;
+    width: 12%;
+    left: 72vw;
+    top: 15vh
+}
+
+#solar {
+    position: absolute;
+    width: 20%;
+    left: 10vw;
+    top: 25vh
+}
+
+#weather {
+    position: absolute;
+    width: 15%;
+    left: 35vw;
+    top: 10vh
+}
+
+#wind {
+    position: absolute;
+    width: 15%;
+    left: 50vw;
+    top: 10vh
+}
+
+#battery {
+    position: absolute;
+    width: 10%;
+    left: 75vw;
+    top: 65vh
+}
