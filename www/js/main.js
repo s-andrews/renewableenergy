@@ -59,6 +59,8 @@ function something_clicked() {
 
 function redraw() {
 
+    // Draw visible elements
+
     if (solar) {
         $("#solar").css("opacity",1)
     }
@@ -89,6 +91,36 @@ function redraw() {
 
     $("#weather").attr("src","images/"+weather+".svg")
 
+
+    // Draw canvas lines
+    let canvas = $("#maincanvas")[0].getContext("2d")
+
+    $("#maincanvas")[0].width = window.innerWidth;
+    $("#maincanvas")[0].height = window.innerHeight;
+
+    canvas.lineWidth = 40
+
+    if (solar) {
+        canvas.beginPath()
+        let x1 = $("#solar").position()["left"] + $("#solar").width()
+        let y1 = $("#solar").position()["top"] + ($("#solar").height()/2)
+        let x2 = $("#museum").position()["left"] + ($("#museum").width()/3)
+        let y2 = y1
+        let x3 = x2
+        let y3 = $("#museum").position()["top"]
+
+        canvas.beginPath()
+        canvas.moveTo(x1, y1)
+        canvas.lineTo(x2,y2)
+        canvas.lineTo(x3,y3)
+        if (weather == "sun" | weather == "grey_cloud") {
+            canvas.strokeStyle = "green"
+        }
+        else {
+            canvas.strokeStyle = "gray"
+        }
+        canvas.stroke()
+    }
 
 
 }

@@ -3,6 +3,7 @@ html, body, #maincontent {
     padding: 0;
 }
 
+
 body {
     height: 100vh;
     width: 100vw
@@ -12,6 +13,7 @@ body {
     width: 100%;
     height: 100%;
 }
+
 
 #museum {
     position: absolute;
