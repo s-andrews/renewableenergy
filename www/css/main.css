@@ -61,3 +61,8 @@ body {
     left: 75vw;
     top: 65vh
 }
+
+.clickable:hover {
+    cursor: pointer;
+    
+}
