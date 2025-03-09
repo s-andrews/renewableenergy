@@ -98,10 +98,9 @@ function redraw() {
     $("#maincanvas")[0].width = window.innerWidth;
     $("#maincanvas")[0].height = window.innerHeight;
 
-    canvas.lineWidth = 40
+    canvas.lineWidth = 60
 
     if (solar) {
-        canvas.beginPath()
         let x1 = $("#solar").position()["left"] + $("#solar").width()
         let y1 = $("#solar").position()["top"] + ($("#solar").height()/2)
         let x2 = $("#museum").position()["left"] + ($("#museum").width()/3)
@@ -120,6 +119,56 @@ function redraw() {
             canvas.strokeStyle = "gray"
         }
         canvas.stroke()
+    }
+
+    if (turbine) {
+        let x1 = $("#turbine").position()["left"]
+        let y1 = $("#solar").position()["top"] + ($("#solar").height()/2)
+        let x2 = $("#museum").position()["left"] + 2*($("#museum").width()/3)
+        let y2 = y1
+        let x3 = x2
+        let y3 = $("#museum").position()["top"]
+
+        canvas.beginPath()
+        canvas.moveTo(x1, y1)
+        canvas.lineTo(x2,y2)
+        canvas.lineTo(x3,y3)
+        if (wind) {
+            canvas.strokeStyle = "green"
+        }
+        else {
+            canvas.strokeStyle = "gray"
+        }
+        canvas.stroke()
+
+    }
+
+    if (battery) {
+        let x1 = $("#battery").position()["left"]
+        let y1 = $("#battery").position()["top"] + ($("#battery").height()/2)
+        let x2 = $("#museum").position()["left"] + ($("#museum").width())
+        let y2 = y1
+
+        canvas.beginPath()
+        canvas.moveTo(x1, y1)
+        canvas.lineTo(x2,y2)
+        canvas.strokeStyle = "green"
+        canvas.stroke()
+
+    }
+
+    if (true) { // Pylon
+        let x1 = $("#pylon").position()["left"] + $("#pylon").width()
+        let y1 = $("#battery").position()["top"] + ($("#battery").height()/2)
+        let x2 = $("#museum").position()["left"] 
+        let y2 = y1
+
+        canvas.beginPath()
+        canvas.moveTo(x1, y1)
+        canvas.lineTo(x2,y2)
+        canvas.strokeStyle = "green"
+        canvas.stroke()
+
     }
 
 
