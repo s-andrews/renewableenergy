@@ -47,14 +47,14 @@ body {
     position: absolute;
     width: 15%;
     left: 35vw;
-    top: 10vh
+    top: 0vh
 }
 
 #wind {
     position: absolute;
     width: 15%;
     left: 50vw;
-    top: 10vh
+    top: 0vh
 }
 
 #battery {
