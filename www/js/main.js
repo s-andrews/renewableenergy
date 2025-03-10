@@ -1,4 +1,4 @@
-var solar = true
+var solar = false
 var turbine = false
 var battery = false
 var battery_level = 0
