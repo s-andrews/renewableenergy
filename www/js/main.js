@@ -1,15 +1,13 @@
 var solar = false
 var turbine = false
 var battery = false
-var battery_level = 0
+var battery_level = 1
 var wind = true
 var weather = "sun"
 var spark = new Image()
 spark.src = "images/spark.svg"
 
-var renewable_line_percent = 100
-var pylon_line_percent = 0
-var battery_line_percent = 0
+var spark_line_percent = 100
 
 $( document ).ready(function() {
     $(".clickable").click(something_clicked)
@@ -23,13 +21,10 @@ $( document ).ready(function() {
 })
 
 function update_spark_positions () {
-    if ((solar & (weather == "sun" | weather == "grey_cloud")) | (turbine & wind)) {
-        renewable_line_percent += 5
-        if (renewable_line_percent > 100) {
-            renewable_line_percent -= 100
-        }
+    spark_line_percent += 5
+    if (spark_line_percent > 100) {
+        spark_line_percent -= 100
     }
-
 
     redraw_lines()
 }
@@ -147,7 +142,7 @@ function redraw_lines() {
 
             // We also need to draw a spark on the line
             let total_length = (x2-x1)+(y3-y2)
-            let distance_on_line = Math.floor((total_length/100)*renewable_line_percent)
+            let distance_on_line = Math.floor((total_length/100)*spark_line_percent)
 
             let solar_x = 0
             let solar_y = 0
@@ -188,7 +183,7 @@ function redraw_lines() {
 
             // We also need to draw a spark on the line
             let total_length = (x1-x2)+(y3-y2)
-            let distance_on_line = Math.floor((total_length/100)*renewable_line_percent)
+            let distance_on_line = Math.floor((total_length/100)*spark_line_percent)
 
             let turbine_x = 0
             let turbine_y = 0
@@ -212,9 +207,9 @@ function redraw_lines() {
     }
 
     if (battery) {
-        let x1 = $("#battery").position()["left"]
+        let x1 = $("#museum").position()["left"] + ($("#museum").width())
         let y1 = $("#battery").position()["top"] + ($("#battery").height()/2)
-        let x2 = $("#museum").position()["left"] + ($("#museum").width())
+        let x2 = $("#battery").position()["left"]
         let y2 = y1
 
         canvas.beginPath()
@@ -223,6 +218,41 @@ function redraw_lines() {
         canvas.strokeStyle = "green"
         canvas.stroke()
 
+        // Add the spark to the battery if needed
+        
+        // If we're producing solar at full sun, or wind then
+        // we're charging the battery
+        if (making_excess() & can_charge_battery()) {
+            // We're charging
+            canvas.strokeStyle = "green"
+            canvas.stroke()
+    
+            let battery_x = x1 + ((x2-x1)/100)*spark_line_percent
+            canvas.drawImage(spark,battery_x-(spark.width/2),y1-(spark.height/2))
+            
+        }
+        else if (making_just_enough()) {
+            // We're battery neutral
+            canvas.strokeStyle = "gray"
+            canvas.stroke()
+    
+        }
+        else {
+            // We're draing the battery if it's got any charge
+            if (can_drain_battery()) {
+                canvas.strokeStyle = "red"
+                canvas.stroke()
+
+                let battery_x = x1 + ((x2-x1)/100)*(100-spark_line_percent)
+                canvas.drawImage(spark,battery_x-(spark.width/2),y1-(spark.height/2))
+    
+            }
+            else {
+                canvas.strokeStyle = "grey"
+                canvas.stroke()
+            }
+    
+        }
     }
 
     if (true) { // Pylon
@@ -234,11 +264,76 @@ function redraw_lines() {
         canvas.beginPath()
         canvas.moveTo(x1, y1)
         canvas.lineTo(x2,y2)
-        canvas.strokeStyle = "green"
-        canvas.stroke()
+
+        // See if we're drawing from the grid or sending
+        // electricity to it
+
+        // If we're making energy or using battery then we don't need the grid
+        if (making_just_enough() | can_charge_battery()) {
+            canvas.strokeStyle = "gray"
+            canvas.stroke()
+        }
+
+        // If we're not making energy and we have no reserves then we're taking from the grid
+        else if (taking_from_grid()) {
+            canvas.strokeStyle = "green"
+            canvas.stroke()
+            let pylon_x = x1 + ((x2-x1)/100)*spark_line_percent
+            canvas.drawImage(spark,pylon_x-(spark.width/2),y1-(spark.height/2))
+        }
+
+        // If we're making lots of energy and not storing it then we're sending
+        // electricity back to the grid
+        else if (sending_to_grid()) {
+            canvas.strokeStyle = "green"
+            canvas.stroke()
+            let pylon_x = x1 + ((x2-x1)/100)*(100-spark_line_percent)
+            canvas.drawImage(spark,pylon_x-(spark.width/2),y1-(spark.height/2))
+
+        }
 
     }
-
-
 }
 
+function making_just_enough() {
+    // This only happens if we have solar and a grey day
+    return (solar & weather == "grey_cloud")
+}
+
+function making_excess() {
+    // This happens if we have a working turbine
+    // or if we have solar and sun
+
+    if (turbine & wind) {
+        return(true)
+    }
+
+    if (solar & weather == "sun") {
+        return(true)
+    }
+
+    return(false)
+}
+
+function can_charge_battery() {
+    return (battery && battery_level != 5)
+}
+
+function can_drain_battery () {
+    return (battery && battery_level != 0)
+}
+
+function taking_from_grid() {
+    if (making_just_enough() | making_excess() | can_drain_battery) {
+        return(false)
+    }
+    return (true)
+}
+
+function sending_to_grid() {
+    if (making_excess() & !can_charge_battery()) {
+        return (true)
+    }
+
+    return(false)
+}
