@@ -1,7 +1,7 @@
 var solar = false
 var turbine = false
 var battery = false
-var battery_level = 1
+var battery_level = 0
 var wind = true
 var weather = "sun"
 var spark = new Image()
@@ -32,8 +32,6 @@ function update_spark_positions () {
 
 function something_clicked() {
     let name = $(this).attr('id')
-
-    console.log("Name is "+name)
 
     if (name == "solar") {
         solar = !solar
@@ -163,6 +161,7 @@ function redraw_lines() {
             canvas.strokeStyle = "gray"
             canvas.stroke()
         }
+
     }
 
     if (turbine) {
@@ -231,11 +230,15 @@ function redraw_lines() {
             canvas.drawImage(spark,battery_x-(spark.width/2),y1-(spark.height/2))
             
         }
+        else if (making_excess() & !can_charge_battery()) {
+            // We're full so we can't take any more
+            canvas.strokeStyle = "gray"
+            canvas.stroke()
+        }
         else if (making_just_enough()) {
             // We're battery neutral
             canvas.strokeStyle = "gray"
             canvas.stroke()
-    
         }
         else {
             // We're draing the battery if it's got any charge
@@ -269,7 +272,7 @@ function redraw_lines() {
         // electricity to it
 
         // If we're making energy or using battery then we don't need the grid
-        if (making_just_enough() | can_charge_battery()) {
+        if (making_just_enough() | (making_excess() & can_charge_battery())) {
             canvas.strokeStyle = "gray"
             canvas.stroke()
         }
@@ -293,6 +296,8 @@ function redraw_lines() {
         }
 
     }
+
+    update_battery()
 }
 
 function making_just_enough() {
@@ -316,7 +321,7 @@ function making_excess() {
 }
 
 function can_charge_battery() {
-    return (battery && battery_level != 5)
+    return (battery && battery_level != 4)
 }
 
 function can_drain_battery () {
@@ -324,7 +329,7 @@ function can_drain_battery () {
 }
 
 function taking_from_grid() {
-    if (making_just_enough() | making_excess() | can_drain_battery) {
+    if (making_just_enough() | making_excess() | can_drain_battery()) {
         return(false)
     }
     return (true)
@@ -336,4 +341,20 @@ function sending_to_grid() {
     }
 
     return(false)
+}
+
+function update_battery() {
+    if (making_excess() & can_charge_battery()) {
+        if (spark_line_percent == 100) {
+            battery_level += 1
+            $("#battery").attr("src","images/battery_"+battery_level+".svg")
+        }
+    }
+
+    else if (!making_just_enough() & !making_excess() & can_drain_battery()) {
+        if (spark_line_percent == 100) {
+            battery_level -=1
+            $("#battery").attr("src","images/battery_"+battery_level+".svg")
+        }
+    }
 }
