@@ -64,6 +64,13 @@ body {
     top: 65vh
 }
 
+#info {
+    position: absolute;
+    width: 10%;
+    left: 2vw;
+    top: 2vh
+}
+
 .clickable:hover {
     cursor: pointer;
     

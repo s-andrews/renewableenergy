@@ -61,6 +61,10 @@ function something_clicked() {
         }
     }
 
+    if (name == "info") {
+        alert(get_status_message())
+    }
+
 
     // Sanity check
 
@@ -359,4 +363,67 @@ function update_battery() {
             $("#battery").attr("src","images/battery_"+battery_level+".svg")
         }
     }
+}
+
+function get_status_message() {
+     if (!solar & !turbine) {
+        return("The museum has no renewable energy infrastructure.  All of its electricity is being drawn from the national grid.")
+     }
+
+     if (making_excess()) {
+        let message = ""
+        if (!turbine) {
+            message = "The museum is making more energy than it is using just from its solar panels."
+        }
+        else if (!solar) {
+            message = "The museum is making more energy than it needs from its wind turbine."
+        }
+        else {
+            // We've got both but they might not both be doing anything
+            if (!wind) {
+                message = "The museum is making more energy than it needs from its solar panels alone.  The wind turbine isn't helping because there's no wind."
+            }
+            else if (weather == "black_cloud") {
+                message = "The museum is making more energy than it needs from its wind turbine alone.  The solar panels aren't helping because there's no sun."
+
+            }
+            else {
+                message = "The combination of solar and wind are both producing electricity."
+            }
+        }
+
+        if (battery & can_charge_battery()) {
+            message += " The excess energy is being stored in our on-site battery to be used later when we can't generate our own power."
+        }
+        else if (sending_to_grid()) {
+            message += " The excess energy is being fed back into the National Grid so that it can be used by other people"
+        }
+
+        return(message)
+     }
+
+     if (making_just_enough()) {
+        let message = "The solar panels are generating just enough energy for the museums needs because there's some sun, but not full sunshine."
+        if (turbine) {
+            message += " The wind turbine isn't helping because there's no wind."
+        }
+
+        return(message)
+     }
+
+     if (can_drain_battery()) {
+        // We must be drawing from the battery.
+        return("None of our renewable sources are generating any electricity.  Because we have a battery we can use the energy stored earlier to run the museum so we don't have to draw energy from the National Grid.")
+     }
+     
+     if (taking_from_grid()) {
+        if ((solar | turbine) & !battery) {
+            return("Our renewable sources aren't producing anything, and because we don't have a battery we must fall back to relying on the National Grid to supply our energy")
+        }
+        else if ((solar | turbing) & battery) {
+            return("Although we have renewable energy and a battery we've not generated electricity for long enough that our battery is empty.  We have had to fall back to using the National Grid.")
+        }
+     }
+
+     return("We're in a state I hadn't anticipated!")
 }
