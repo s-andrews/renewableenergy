@@ -321,7 +321,7 @@ function making_excess() {
 }
 
 function can_charge_battery() {
-    return (battery && battery_level != 4)
+    return (battery && battery_level != 8)
 }
 
 function can_drain_battery () {
