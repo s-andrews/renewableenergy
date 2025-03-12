@@ -420,7 +420,7 @@ function get_status_message() {
         if ((solar | turbine) & !battery) {
             return("Our renewable sources aren't producing anything, and because we don't have a battery we must fall back to relying on the National Grid to supply our energy")
         }
-        else if ((solar | turbing) & battery) {
+        else if ((solar | turbine) & battery) {
             return("Although we have renewable energy and a battery we've not generated electricity for long enough that our battery is empty.  We have had to fall back to using the National Grid.")
         }
      }
