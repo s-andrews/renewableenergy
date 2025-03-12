@@ -12,6 +12,8 @@ var spark_line_percent = 100
 $( document ).ready(function() {
     $(".clickable").click(something_clicked)
 
+    $("#statusmessage").click(function(){$(this).fadeOut()})
+
     $(window).on("resize",redraw_lines)
 
     redraw()
@@ -62,7 +64,8 @@ function something_clicked() {
     }
 
     if (name == "info") {
-        alert(get_status_message())
+        $("#statusmessage").text(get_status_message())
+        $("#statusmessage").fadeIn()
     }
 
 
@@ -308,7 +311,12 @@ function redraw_lines() {
 
 function making_just_enough() {
     // This only happens if we have solar and a grey day
-    return (solar & weather == "grey_cloud")
+    if (solar & weather == "grey_cloud") {
+        if (turbine & wind) {
+            return(false)
+        }
+        return(true)
+    }
 }
 
 function making_excess() {
@@ -403,7 +411,7 @@ function get_status_message() {
      }
 
      if (making_just_enough()) {
-        let message = "The solar panels are generating just enough energy for the museums needs because there's some sun, but not full sunshine."
+        let message = "The solar panels are generating just enough energy for the museum's needs because there's some sun, but not full sunshine."
         if (turbine) {
             message += " The wind turbine isn't helping because there's no wind."
         }
