@@ -74,7 +74,7 @@ body {
 #statusmessage {
     display: none;
     background-color: white;
-    border-color: black;
+    border-color: forestgreen;
     border-style: solid;
     border-width: 0.5em;
     border-radius: 1em;
@@ -82,7 +82,7 @@ body {
     width: 50%;
     position: absolute;
     left:25%;
-    top:20%;
+    top:30%;
     font-size: xx-large;
     text-align: center;
     font-family: sans-serif;

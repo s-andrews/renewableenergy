@@ -12,7 +12,7 @@ var spark_line_percent = 100
 $( document ).ready(function() {
     $(".clickable").click(something_clicked)
 
-    $("#statusmessage").click(function(){$(this).fadeOut()})
+    $("#statusmessage").click(function(){$(this).fadeOut();$("#maincontent").css("opacity",1)})
 
     $(window).on("resize",redraw_lines)
 
@@ -65,6 +65,7 @@ function something_clicked() {
 
     if (name == "info") {
         $("#statusmessage").text(get_status_message())
+        $("#maincontent").css("opacity",0.2)
         $("#statusmessage").fadeIn()
     }
 
@@ -304,6 +305,13 @@ function redraw_lines() {
 
         }
 
+        // If we're not generating and we're drawing from the battery we aren't using
+        // the grid
+        else {
+            canvas.strokeStyle = "gray"
+            canvas.stroke()
+        }
+
     }
 
     update_battery()
@@ -375,7 +383,7 @@ function update_battery() {
 
 function get_status_message() {
      if (!solar & !turbine) {
-        return("The museum has no renewable energy infrastructure.  All of its electricity is being drawn from the national grid.")
+        return("The museum currently has no renewable energy infrastructure.  All of its electricity is being drawn from the national grid.")
      }
 
      if (making_excess()) {
