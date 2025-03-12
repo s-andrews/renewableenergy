@@ -120,7 +120,9 @@ function redraw_lines() {
     $("#maincanvas")[0].width = window.innerWidth;
     $("#maincanvas")[0].height = window.innerHeight;
 
-    canvas.lineWidth = 60
+    let sparkWidth = window.innerWidth/25
+    let sparkHeight = sparkWidth
+    canvas.lineWidth = window.innerWidth/100
 
     if (solar) {
         let x1 = $("#solar").position()["left"] + $("#solar").width()
@@ -152,9 +154,9 @@ function redraw_lines() {
                 solar_x = x2
                 solar_y = y2+(distance_on_line - (x2-x1))
             }
-            solar_x -= spark.width/2
-            solar_y -= spark.height/2
-            canvas.drawImage(spark,solar_x,solar_y)
+            solar_x -= sparkWidth/2
+            solar_y -= sparkHeight/2
+            canvas.drawImage(spark,solar_x,solar_y,sparkWidth,sparkHeight)
 
         }
         else {
@@ -194,9 +196,9 @@ function redraw_lines() {
                 turbine_x = x2
                 turbine_y = y1+(distance_on_line - (x1-x2))
             }
-            turbine_x -= spark.width/2
-            turbine_y -= spark.height/2
-            canvas.drawImage(spark,turbine_x,turbine_y)
+            turbine_x -= sparkWidth/2
+            turbine_y -= sparkHeight/2
+            canvas.drawImage(spark,turbine_x,turbine_y,sparkWidth,sparkHeight)
         }
         else {
             canvas.strokeStyle = "gray"
@@ -227,7 +229,7 @@ function redraw_lines() {
             canvas.stroke()
     
             let battery_x = x1 + ((x2-x1)/100)*spark_line_percent
-            canvas.drawImage(spark,battery_x-(spark.width/2),y1-(spark.height/2))
+            canvas.drawImage(spark,battery_x-(sparkWidth/2),y1-(sparkHeight/2),sparkWidth,sparkHeight)
             
         }
         else if (making_excess() & !can_charge_battery()) {
@@ -247,7 +249,7 @@ function redraw_lines() {
                 canvas.stroke()
 
                 let battery_x = x1 + ((x2-x1)/100)*(100-spark_line_percent)
-                canvas.drawImage(spark,battery_x-(spark.width/2),y1-(spark.height/2))
+                canvas.drawImage(spark,battery_x-(sparkWidth/2),y1-(sparkHeight/2),sparkWidth,sparkHeight)
     
             }
             else {
@@ -282,7 +284,7 @@ function redraw_lines() {
             canvas.strokeStyle = "green"
             canvas.stroke()
             let pylon_x = x1 + ((x2-x1)/100)*spark_line_percent
-            canvas.drawImage(spark,pylon_x-(spark.width/2),y1-(spark.height/2))
+            canvas.drawImage(spark,pylon_x-(sparkWidth/2),y1-(sparkHeight/2),sparkWidth,sparkHeight)
         }
 
         // If we're making lots of energy and not storing it then we're sending
@@ -291,7 +293,7 @@ function redraw_lines() {
             canvas.strokeStyle = "green"
             canvas.stroke()
             let pylon_x = x1 + ((x2-x1)/100)*(100-spark_line_percent)
-            canvas.drawImage(spark,pylon_x-(spark.width/2),y1-(spark.height/2))
+            canvas.drawImage(spark,pylon_x-(sparkWidth/2),y1-(sparkHeight/2),sparkWidth,sparkHeight)
 
         }
 
